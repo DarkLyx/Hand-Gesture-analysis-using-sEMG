@@ -1,7 +1,7 @@
 import os
 
 # --- CHOIX DE L'APPROCHE ---
-MODE = "DL"  # "ML" ou "DL"
+MODE = "VIT"  # "ML", "CNN", "VIT" ou "GNN"
 
 # --- CHEMINS ---
 ROOT_DIR = 'data'             
@@ -31,3 +31,13 @@ VALIDATION_SIZE = 0.20
 # --- PARAMÈTRES CNN ---
 BATCH_SIZE = 64
 EPOCHS = 40
+
+# --- PARAMÈTRES VIT ---
+PATCH_SIZE = 20         # Taille d'un patch temporel (ex: 20ms)
+PROJECTION_DIM = 64     # Dimension de l'espace latent (Embedding)
+NUM_HEADS = 4           # Nombre de têtes d'attention
+TRANSFORMER_LAYERS = 4  # Profondeur du réseau (nombre de blocs)
+MLP_HEAD_UNITS = [2048, 1024] # Couches denses finales
+
+GRAPH_CHANNELS = 8  # Nombre de nœuds (vos capteurs)
+GNN_LAYERS = 3      # Profondeur

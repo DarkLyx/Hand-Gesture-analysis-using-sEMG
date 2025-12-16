@@ -37,27 +37,26 @@ def plot_confusion_matrix(y_true, y_pred, mode_name="ML", dataset_name="Test"):
     plt.xlabel('Geste Prédit')
     save_plot(f"{mode_name}_{dataset_name}_confusion_matrix.png")
 
-def plot_training_history(history):
+def plot_training_history(history, mode_name):
     plt.figure(figsize=(8, 5))
     plt.plot(history.history['accuracy'], label='Train Acc')
     plt.plot(history.history['val_accuracy'], label='Val Acc')
-    plt.title('Historique : Précision (Accuracy)')
+    plt.title(f'{mode_name} : Historique Précision (Accuracy)') # Titre dynamique
     plt.xlabel('Époques')
     plt.ylabel('Accuracy')
     plt.legend()
     plt.grid(True, alpha=0.3)
-    save_plot("DL_history_accuracy.png")
+    save_plot(f"{mode_name}_history_accuracy.png")
 
-    # Loss
     plt.figure(figsize=(8, 5))
     plt.plot(history.history['loss'], label='Train Loss', color='orange')
     plt.plot(history.history['val_loss'], label='Val Loss', color='red')
-    plt.title('Historique : Perte (Loss)')
+    plt.title(f'{mode_name} : Historique Perte (Loss)') # Titre dynamique
     plt.xlabel('Époques')
     plt.ylabel('Loss')
     plt.legend()
     plt.grid(True, alpha=0.3)
-    save_plot("DL_history_loss.png")
+    save_plot(f"{mode_name}_history_loss.png")
 
 def save_comparison_results(y_val_true, y_val_pred, y_test_true, y_test_pred, mode_name="ML"):
     """
