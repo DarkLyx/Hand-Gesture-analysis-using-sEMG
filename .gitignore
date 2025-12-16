@@ -1,0 +1,21 @@
+# --- PYTHON ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- ENVIRONNEMENTS VIRTUELS ---
+venv/
+.venv/
+env/
+
+# --- IDE (VS Code, PyCharm) ---
+.vscode/
+.idea/
+
+# --- DONNÉES BRUTES (Ton dossier data) ---
+*data/
+check_data.py
+
+# --- SYSTÈME ---
+.DS_Store
+Thumbs.db
