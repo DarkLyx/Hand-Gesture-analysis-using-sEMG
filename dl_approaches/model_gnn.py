@@ -16,15 +16,15 @@ class LearnableGraphConv(layers.Layer):
         return tf.nn.relu(tf.matmul(inputs, self.A) + self.bias)
 
 def create_gnn_model(input_shape, num_classes):
-    """Architecture Hybride GNN (Spatial) + CNN (Temporel) complète et compilée."""
+    """Complete hybrid GNN (spatial) + CNN (temporal) architecture, compiled and ready for training."""
     inputs = Input(shape=input_shape)
     
     # 1. Graph Convolution (Spatial)
-    # Apprend les relations entre les 8 capteurs
+    # Learns spatial relationships between the sEMG sensors
     x = LearnableGraphConv(output_dim=input_shape[-1], num_nodes=input_shape[1])(inputs)
     x = layers.BatchNormalization()(x)
     
-    # 2. CNN Layers (Temporel)
+    # 2. CNN Layers (Temporal)
     x = layers.Conv1D(64, 5, padding='same', activation='relu')(x)
     x = layers.MaxPooling1D(2)(x)
     x = layers.Dropout(0.2)(x)

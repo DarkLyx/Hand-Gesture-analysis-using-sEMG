@@ -2,7 +2,7 @@ from tensorflow.keras.models import Sequential # type: ignore
 from tensorflow.keras.layers import Conv1D, MaxPooling1D, Dense, Dropout, BatchNormalization, GlobalAveragePooling1D # type: ignore
 
 def create_cnn_model(input_shape, num_classes):
-    """Architecture CNN 1D optimisée."""
+    """CNN 1D Architecture """
     model = Sequential([
         Conv1D(64, 5, padding='same', activation='relu', input_shape=input_shape),
         BatchNormalization(),

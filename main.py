@@ -6,30 +6,30 @@ from dl_approaches.train_vit import run_vit_experiment
 from dl_approaches.train_gnn import run_gnn_experiment
 
 def main():
-    print("="*60)
-    print(f"   LANCEMENT DU PROJET sEMG")
-    print(f"   MODE ACTUEL : {cfg.MODE}")
-    print("="*60)
+    print("=" * 60)
+    print("sEMG PROJECT LAUNCH")
+    print(f"CURRENT APPROACH : {cfg.MODE}")
+    print("=" * 60)
 
     if cfg.MODE == "ML":
-        print(">> Lancement de l'approche Feature Engineering + SVM...")
+        print(">> Running Feature Engineering + SVM approach...")
         run_ml_experiment()
         
     elif cfg.MODE == "CNN":
-        print(">> Lancement de l'approche Convolutional neural networks (CNN)...")
+        print(">> Running Convolutional Neural Network (CNN) approach...")
         run_cnn_experiment()
     
     elif cfg.MODE == "VIT":
-        print(">> Lancement de l'approche Vision Transformer (ViT)...")
+        print(">> Running Vision Transformer (ViT) approach...")
         run_vit_experiment()
   
     elif cfg.MODE == "GNN":
-        print(">> Lancement de l'approche Graph Neural Network (GNN)...")
+        print(">> Running Graph Neural Network (GNN) approach...")
         run_gnn_experiment()
     
     else:
-        print(f"ERREUR : Le mode '{cfg.MODE}' défini dans common/config.py est inconnu.")
-        print("Utilisez 'ML', 'CNN' ou 'VIT'.")
+        print(f"ERROR: The mode '{cfg.MODE}' defined in common/config.py is unknown.")
+        print("Please use 'ML', 'CNN', 'VIT', or 'GNN'.")
 
 if __name__ == "__main__":
     main()

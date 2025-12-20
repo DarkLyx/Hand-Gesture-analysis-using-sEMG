@@ -21,7 +21,6 @@ def majority_voting(predictions, window_size):
 def save_plot(filename):
     path = os.path.join(cfg.RESULTS_DIR, filename)
     plt.savefig(path)
-    print(f"   [PLOT] Sauvegardé : {path}")
     plt.close()
 
 def plot_confusion_matrix(y_true, y_pred, mode_name="ML", dataset_name="Test"):
@@ -41,7 +40,7 @@ def plot_training_history(history, mode_name):
     plt.figure(figsize=(8, 5))
     plt.plot(history.history['accuracy'], label='Train Acc')
     plt.plot(history.history['val_accuracy'], label='Val Acc')
-    plt.title(f'{mode_name} : Historique Précision (Accuracy)') # Titre dynamique
+    plt.title(f'{mode_name} : Historique Précision (Accuracy)')
     plt.xlabel('Époques')
     plt.ylabel('Accuracy')
     plt.legend()
@@ -51,7 +50,7 @@ def plot_training_history(history, mode_name):
     plt.figure(figsize=(8, 5))
     plt.plot(history.history['loss'], label='Train Loss', color='orange')
     plt.plot(history.history['val_loss'], label='Val Loss', color='red')
-    plt.title(f'{mode_name} : Historique Perte (Loss)') # Titre dynamique
+    plt.title(f'{mode_name} : Historique Perte (Loss)')
     plt.xlabel('Époques')
     plt.ylabel('Loss')
     plt.legend()
@@ -60,8 +59,8 @@ def plot_training_history(history, mode_name):
 
 def save_comparison_results(y_val_true, y_val_pred, y_test_true, y_test_pred, mode_name="ML"):
     """
-    Crée un graphique comparatif : Validation vs Test
-    pour Accuracy, F1-Macro et F1-Weighted.
+    Create a comparative plot: Validation vs Test
+    for Accuracy, F1-Macro, and F1-Weighted scores.
     """
     acc_val = accuracy_score(y_val_true, y_val_pred)
     f1m_val = f1_score(y_val_true, y_val_pred, average='macro')
@@ -71,10 +70,10 @@ def save_comparison_results(y_val_true, y_val_pred, y_test_true, y_test_pred, mo
     f1m_test = f1_score(y_test_true, y_test_pred, average='macro')
     f1w_test = f1_score(y_test_true, y_test_pred, average='weighted')
 
-    print(f"\n   >>> RÉSULTATS COMPARATIFS ({mode_name}) <<<")
-    print(f"   [Validation] Acc: {acc_val:.2%} | F1-Macro: {f1m_val:.2%} | F1-Weighted: {f1w_val:.2%}")
-    print(f"   [Test Final] Acc: {acc_test:.2%} | F1-Macro: {f1m_test:.2%} | F1-Weighted: {f1w_test:.2%}")
-
+    print(f"\nCOMPARATIVE RESULTS ({mode_name}) <<<")
+    print(f"[Validation] Accuracy: {acc_val:.2%} | F1-Macro: {f1m_val:.2%} | F1-Weighted: {f1w_val:.2%}")
+    print(f"[Final Test] Accuracy: {acc_test:.2%} | F1-Macro: {f1m_test:.2%} | F1-Weighted: {f1w_test:.2%}")
+    
     metrics = ['Accuracy', 'F1 (Macro)', 'F1 (Weighted)']
     val_scores = [acc_val, f1m_val, f1w_val]
     test_scores = [acc_test, f1m_test, f1w_test]

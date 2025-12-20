@@ -18,7 +18,7 @@ def run_gnn_experiment():
     y = np.load(os.path.join(cfg.TENSOR_DIR, 'y.npy'))
     subs = np.load(os.path.join(cfg.TENSOR_DIR, 'sub.npy'))
 
-    # Préparation labels
+    # Labels
     classes = np.unique(y)
     class_map = {c: i for i, c in enumerate(classes)}
     y_mapped = np.array([class_map[lbl] for lbl in y])
@@ -51,7 +51,7 @@ def run_gnn_experiment():
         verbose=1
     )
 
-    print("\n   [GNN] Génération des résultats...")
+    print("\n[GNN] Computing final scores")
     met.plot_training_history(history, mode_name="GNN")
     
     y_val_pred = np.argmax(model.predict(X_val), axis=1)
@@ -63,7 +63,7 @@ def run_gnn_experiment():
     met.plot_confusion_matrix(y_val_true, y_val_pred, mode_name="GNN", dataset_name="Validation")
     met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name="GNN", dataset_name="Test")
 
-    # Comparaison Metrics
+    # Comparison Metrics
     met.save_comparison_results(
         y_val_true, y_val_pred,
         y_test_true, y_test_pred,

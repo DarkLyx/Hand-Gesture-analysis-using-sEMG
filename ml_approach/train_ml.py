@@ -16,10 +16,10 @@ def load_or_extract_features():
         os.makedirs(cfg.CSV_DIR)
 
     if os.path.exists(cfg.CSV_FILE):
-        print(f"   [ML] Chargement de {cfg.CSV_FILE}...")
+        print(f"[ML] Loading {cfg.CSV_FILE}")
         return pd.read_csv(cfg.CSV_FILE)
     
-    print("   [ML] Extraction des features (TD+FD)...")
+    print("[ML] Feature extraction (TD+FD)")
     all_data = []
     
     for subject_id in range(1, 37):
@@ -43,11 +43,11 @@ def load_or_extract_features():
         print(f"   -> Sujet {subject_id} traité")
     
     if not all_data:
-        print(f"ERREUR: Aucune donnée trouvée dans {cfg.ROOT_DIR}")
+        print(f"No data found in {cfg.ROOT_DIR}")
         sys.exit()
 
     df = pd.DataFrame(all_data)
-    print(f"   [ML] Sauvegarde dans {cfg.CSV_FILE}...")
+    print(f"[ML] Saved in {cfg.CSV_FILE}...")
     df.to_csv(cfg.CSV_FILE, index=False)
     return df
 
@@ -69,15 +69,15 @@ def run_ml_experiment():
 
     best_model = ml_model.train_ml_model(X_train, y_train)
 
-    # Optimisation Validation
+    # Optimization & Validation
     y_val_raw = best_model.predict(X_val)
     best_win, best_acc = 1, 0
     for w in [1, 3, 5, 7, 9]:
         acc = accuracy_score(y_val, met.majority_voting(y_val_raw, w))
         if acc > best_acc: best_win, best_acc = w, acc
-    print(f"   -> Meilleure fenêtre : {best_win}")
+    print(f"Best window : {best_win}")
 
-    print("\n   [ML] Calcul des scores finaux...")
+    print("\n[ML] Computing final results")
     
     y_val_smooth = met.majority_voting(y_val_raw, window_size=best_win)
     met.plot_confusion_matrix(y_val, y_val_smooth, mode_name="ML", dataset_name="Validation")

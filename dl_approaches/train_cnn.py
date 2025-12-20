@@ -10,7 +10,7 @@ from dl_approaches.model_cnn import create_cnn_model
 from dl_approaches.prepare_tensors import generate_tensors
 
 def run_cnn_experiment():
-    # Tenseurs
+    # Tensors
     if not os.path.exists(os.path.join(cfg.TENSOR_DIR, 'X.npy')):
         generate_tensors()
     
@@ -45,16 +45,16 @@ def run_cnn_experiment():
     history = model.fit(X_train, y_train, validation_data=(X_val, y_val), 
                         epochs=cfg.EPOCHS, batch_size=cfg.BATCH_SIZE, callbacks=callbacks, verbose=1)
 
-    # Eval
-    print("\n   [DL] Calcul des scores finaux...")
+    # Evaluation
+    print("\n[CNN] Computing final scores")
     met.plot_training_history(history, mode_name="CNN")
     
-    # 1. Validation
+    # Validation
     y_val_pred = np.argmax(model.predict(X_val), axis=1)
     y_val_true = np.argmax(y_val, axis=1)
     met.plot_confusion_matrix(y_val_true, y_val_pred, mode_name="CNN", dataset_name="Validation")
 
-    # 2. Test
+    # Test
     y_test_pred = np.argmax(model.predict(X_test), axis=1)
     y_test_true = np.argmax(y_test, axis=1)
     met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name="CNN", dataset_name="Test")

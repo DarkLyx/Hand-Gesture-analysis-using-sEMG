@@ -51,7 +51,7 @@ def run_vit_experiment():
         verbose=1
     )
 
-    print("\n   [VIT] Génération des résultats...")
+    print("\n[VIT] Computing final results.")
     met.plot_training_history(history, mode_name="VIT")
     
     y_val_pred = np.argmax(model.predict(X_val), axis=1)
