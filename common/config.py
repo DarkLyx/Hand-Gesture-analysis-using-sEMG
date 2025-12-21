@@ -1,7 +1,10 @@
 import os
 
 # APPROACH CHOICE
-MODE = "VIT"  # "ML", "CNN", "VIT" or "GNN"
+MODE = "CNN"  # "ML", "CNN", "CNN-no-preprocessing", "CNN-VGG-transfert", "VIT" or "GNN"
+
+#
+USE_PREPROCESSING = (MODE != "CNN-no-preprocessing")
 
 # 
 ROOT_DIR = 'data'             
@@ -32,6 +35,10 @@ VALIDATION_SIZE = 0.20
 # CNN PARAMETERS
 BATCH_SIZE = 64
 EPOCHS = 40
+
+# SPECTROGRAM
+SPECTRO_NPERSEG = 32
+SPECTRO_NOVERLAP = 16
 
 # VIT PARAMETERS
 PATCH_SIZE = 20         # Temporal patch size (ex: 20ms)

@@ -6,13 +6,12 @@ from sklearn.model_selection import GroupShuffleSplit
 
 import common.config as cfg
 import common.metrics as met
-from dl_approaches.model_cnn import create_cnn_model
+from dl_approaches.CNN.model_cnn import create_cnn_model
 from dl_approaches.prepare_tensors import generate_tensors
 
-def run_cnn_experiment():
-    # Tensors
-    if not os.path.exists(os.path.join(cfg.TENSOR_DIR, 'X.npy')):
-        generate_tensors()
+def run_cnn_experiment(mode):
+   
+    generate_tensors()
     
     X = np.load(os.path.join(cfg.TENSOR_DIR, 'X.npy'))
     y = np.load(os.path.join(cfg.TENSOR_DIR, 'y.npy'))
@@ -47,20 +46,20 @@ def run_cnn_experiment():
 
     # Evaluation
     print("\n[CNN] Computing final scores")
-    met.plot_training_history(history, mode_name="CNN")
+    met.plot_training_history(history, mode_name=mode)
     
     # Validation
     y_val_pred = np.argmax(model.predict(X_val), axis=1)
     y_val_true = np.argmax(y_val, axis=1)
-    met.plot_confusion_matrix(y_val_true, y_val_pred, mode_name="CNN", dataset_name="Validation")
+    met.plot_confusion_matrix(y_val_true, y_val_pred, mode_name=mode, dataset_name="Validation")
 
     # Test
     y_test_pred = np.argmax(model.predict(X_test), axis=1)
     y_test_true = np.argmax(y_test, axis=1)
-    met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name="CNN", dataset_name="Test")
+    met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name=mode, dataset_name="Test")
 
     met.save_comparison_results(
         y_val_true, y_val_pred,   
         y_test_true, y_test_pred, 
-        mode_name="CNN"
+        mode_name=mode
     )

@@ -1,9 +1,9 @@
 import common.config as cfg
 
 from ml_approach.train_ml import run_ml_experiment
-from dl_approaches.train_cnn import run_cnn_experiment
-from dl_approaches.train_vit import run_vit_experiment
-from dl_approaches.train_gnn import run_gnn_experiment
+from dl_approaches.CNN.train_cnn import run_cnn_experiment
+from dl_approaches.VIT.train_vit import run_vit_experiment
+from dl_approaches.GNN.train_gnn import run_gnn_experiment
 
 def main():
     print("=" * 60)
@@ -17,7 +17,15 @@ def main():
         
     elif cfg.MODE == "CNN":
         print(">> Running Convolutional Neural Network (CNN) approach...")
-        run_cnn_experiment()
+        run_cnn_experiment(cfg.MODE)
+
+    elif cfg.MODE == "CNN-no-preprocessing":
+        print(">> Running Convolutional Neural Network (CNN) approach without preprocessing data...")
+        run_cnn_experiment(cfg.MODE)
+
+    elif cfg.MODE == "CNN-VGG-transfert":
+        print(">> Running Convolutional Neural Network (CNN) approach with VGG Transfert Learning model...")
+        run_cnn_experiment(cfg.MODE)
     
     elif cfg.MODE == "VIT":
         print(">> Running Vision Transformer (ViT) approach...")

@@ -6,13 +6,12 @@ from sklearn.model_selection import GroupShuffleSplit
 
 import common.config as cfg
 import common.metrics as met
-from dl_approaches.model_gnn import create_gnn_model
+from dl_approaches.GNN.model_gnn import create_gnn_model
 from dl_approaches.prepare_tensors import generate_tensors
 
 def run_gnn_experiment():
     
-    if not os.path.exists(os.path.join(cfg.TENSOR_DIR, 'X.npy')):
-        generate_tensors()
+    generate_tensors()
     
     X = np.load(os.path.join(cfg.TENSOR_DIR, 'X.npy'))
     y = np.load(os.path.join(cfg.TENSOR_DIR, 'y.npy'))
