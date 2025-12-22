@@ -1,6 +1,6 @@
-from tensorflow.keras import layers, models, Input
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras import layers, models, Input #type: ignore
+from tensorflow.keras.applications import VGG16 #type: ignore
+from tensorflow.keras.applications.vgg16 import preprocess_input #type: ignore
 
 def create_vgg_adapter_model(input_shape, num_classes):
     inputs = Input(shape=input_shape)

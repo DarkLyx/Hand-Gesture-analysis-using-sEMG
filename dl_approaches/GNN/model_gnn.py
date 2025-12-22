@@ -21,7 +21,7 @@ def create_gnn_model(input_shape, num_classes):
     
     # 1. Graph Convolution (Spatial)
     # Learns spatial relationships between the sEMG sensors
-    x = LearnableGraphConv(output_dim=input_shape[-1], num_nodes=input_shape[1])(inputs)
+    x = LearnableGraphConv(output_dim=input_shape[-1], num_nodes=input_shape[-1])(inputs)
     x = layers.BatchNormalization()(x)
     
     # 2. CNN Layers (Temporal)

@@ -15,7 +15,6 @@ def generate_tensors():
     X_list, y_list, sub_list = [], [], []
     print("[DL] Tensors generation (Filters & Z-Score)")
     if os.path.exists(cfg.TENSOR_DIR):
-        print(f"[DL] Suppression de l'ancien dossier : {cfg.TENSOR_DIR}")
         shutil.rmtree(cfg.TENSOR_DIR)
         
     for subject_id in range(1, 37):
@@ -33,14 +32,14 @@ def generate_tensors():
                     # Cleaning
                     df = pp.clean_and_trim_data(df)
                     if df is None: continue
-                    
-                    # Z-SCORE
-                    scaler = StandardScaler()
-                    df[chans] = scaler.fit_transform(df[chans])
+                
+                # Z-SCORE
+                scaler = StandardScaler()
+                df[chans] = scaler.fit_transform(df[chans])
                 
                 # Windowing
                 for seg, label in pp.get_windows(df):
-                    if cfg.MODE == "CNN-pretrained":
+                    if cfg.MODE == "CNN-VGG-transfert":
                         spectros = []
                         for i in range(8):
                             f, t, Sxx = signal.spectrogram(seg[:, i], fs=cfg.FS, nperseg=cfg.SPECTRO_NPERSEG, noverlap=cfg.SPECTRO_NOVERLAP)

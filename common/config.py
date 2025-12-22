@@ -31,6 +31,7 @@ NOTCH_FREQ = 50.0       # Suppress electrical grid noise (50 Hz)
 RANDOM_STATE = 42
 TEST_SIZE = 0.20
 VALIDATION_SIZE = 0.20
+N_FOLDS = 5
 
 # CNN PARAMETERS
 BATCH_SIZE = 64
