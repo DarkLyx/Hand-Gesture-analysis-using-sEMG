@@ -18,8 +18,16 @@ def majority_voting(predictions, window_size):
         smoothed.append(m)
     return np.array(smoothed)
 
-def save_plot(filename):
-    path = os.path.join(cfg.RESULTS_DIR, filename)
+def save_plot(filename, sub_folder=None):
+    if sub_folder:
+        target_dir = os.path.join(cfg.RESULTS_DIR, sub_folder)
+    else:
+        target_dir = cfg.RESULTS_DIR
+
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
+    path = os.path.join(target_dir, filename)
     plt.savefig(path)
     plt.close()
 
@@ -34,8 +42,8 @@ def plot_confusion_matrix(y_true, y_pred, mode_name="ML", dataset_name="Test"):
     plt.title(f"{mode_name} - {dataset_name}: Matrice de Confusion")
     plt.ylabel('Vrai Geste')
     plt.xlabel('Geste Prédit')
-    save_plot(f"{mode_name}_{dataset_name}_confusion_matrix.png")
-
+    save_plot(f"{mode_name}_{dataset_name}_confusion_matrix.png", sub_folder=mode_name)
+    
 def plot_training_history(history, mode_name):
     plt.figure(figsize=(8, 5))
     plt.plot(history.history['accuracy'], label='Train Acc')
@@ -45,8 +53,8 @@ def plot_training_history(history, mode_name):
     plt.ylabel('Accuracy')
     plt.legend()
     plt.grid(True, alpha=0.3)
-    save_plot(f"{mode_name}_history_accuracy.png")
-
+    save_plot(f"{mode_name}_history_accuracy.png", sub_folder=mode_name)
+    
     plt.figure(figsize=(8, 5))
     plt.plot(history.history['loss'], label='Train Loss', color='orange')
     plt.plot(history.history['val_loss'], label='Val Loss', color='red')
@@ -55,8 +63,8 @@ def plot_training_history(history, mode_name):
     plt.ylabel('Loss')
     plt.legend()
     plt.grid(True, alpha=0.3)
-    save_plot(f"{mode_name}_history_loss.png")
-
+    save_plot(f"{mode_name}_history_loss.png", sub_folder=mode_name)
+    
 def save_comparison_results(y_val_true, y_val_pred, y_test_true, y_test_pred, mode_name="ML"):
     """
     Create a comparative plot: Validation vs Test
@@ -103,4 +111,4 @@ def save_comparison_results(y_val_true, y_val_pred, y_test_true, y_test_pred, mo
     add_labels(bars1)
     add_labels(bars2)
 
-    save_plot(f"{mode_name}_comparison_metrics.png")
+    save_plot(f"{mode_name}_comparison_metrics.png", sub_folder=mode_name)

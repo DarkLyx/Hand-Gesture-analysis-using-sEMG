@@ -11,6 +11,7 @@ import common.config as cfg
 import common.metrics as met
 from dl_approaches.GNN.model_gnn import create_gnn_model
 from dl_approaches.prepare_tensors import generate_tensors
+import common.postprocessing as post
 
 def run_gnn_experiment():
     generate_tensors()
@@ -76,18 +77,51 @@ def run_gnn_experiment():
         callbacks=callbacks, 
         verbose=1
     )
-
-    met.plot_training_history(history, mode_name="GNN")
     
-    y_test_pred = np.argmax(model.predict(X_test), axis=1)
+    y_test_pred_raw = np.argmax(model.predict(X_test), axis=1)
     y_test_true = np.argmax(y_test, axis=1)
-    
-    met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name="GNN", dataset_name="Test")
+
+    y_val_true_final = np.array(oof_y_true)
+    y_val_pred_raw_final = np.array(oof_y_pred) 
+
+        
+    if cfg.USE_POST_PROCESSING:
+        print(f"\n[GNN] Applying Majority Voting optimization...")
+        y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
+            y_val_true_final, 
+            y_val_pred_raw_final, 
+            y_test_pred_raw
+        )
+        suffix = "_w_post"
+    else:
+        print(f"\n[GNN] Post-processing DISABLED via config.")
+        y_val_final = y_val_pred_raw_final
+        y_test_final = y_test_pred_raw
+        suffix = "_no_post"
+
+    run_name = "GNN" + suffix
+    met.plot_training_history(history, mode_name=run_name)
+
+    met.plot_confusion_matrix(y_val_true_final, y_val_final, mode_name=run_name, dataset_name="Validation")
+    met.plot_confusion_matrix(y_test_true, y_test_final, mode_name=run_name, dataset_name="Test")
 
     met.save_comparison_results(
-        y_val_true=np.array(oof_y_true),
-        y_val_pred=np.array(oof_y_pred),
+        y_val_true=y_val_true_final,
+        y_val_pred=y_val_final,
         y_test_true=y_test_true, 
-        y_test_pred=y_test_pred,
-        mode_name="GNN"
+        y_test_pred=y_test_final,
+        mode_name=run_name
     )
+    
+    # y_test_pred = np.argmax(model.predict(X_test), axis=1)
+    # y_test_true = np.argmax(y_test, axis=1)
+    
+    # met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name="GNN", dataset_name="Test")
+
+    # met.save_comparison_results(
+    #     y_val_true=np.array(oof_y_true),
+    #     y_val_pred=np.array(oof_y_pred),
+    #     y_test_true=y_test_true, 
+    #     y_test_pred=y_test_pred,
+    #     mode_name="GNN"
+    # )

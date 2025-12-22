@@ -12,6 +12,7 @@ import common.metrics as met
 from dl_approaches.CNN.model_cnn import create_cnn_model
 from dl_approaches.CNN.model_vgg_adapter import create_vgg_adapter_model
 from dl_approaches.prepare_tensors import generate_tensors
+import common.postprocessing as post
 
 def run_cnn_experiment(mode):
     generate_tensors()
@@ -79,18 +80,51 @@ def run_cnn_experiment(mode):
                         batch_size=cfg.BATCH_SIZE, 
                         callbacks=callbacks, 
                         verbose=1)
-
-    met.plot_training_history(history, mode_name=mode)
     
-    y_test_pred = np.argmax(model.predict(X_test), axis=1)
+    y_test_pred_raw = np.argmax(model.predict(X_test), axis=1)
     y_test_true = np.argmax(y_test, axis=1)
+
+    y_val_true_final = np.array(oof_y_true)
+    y_val_pred_raw_final = np.array(oof_y_pred) 
+
     
-    met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name=mode, dataset_name="Test")
+    if cfg.USE_POST_PROCESSING and (mode != "CNN-no-preprocessing"):
+        print(f"\n[{mode}] Applying Majority Voting optimization...")
+        y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
+            y_val_true_final, 
+            y_val_pred_raw_final, 
+            y_test_pred_raw
+        )
+        suffix = "_w_post"
+    else:
+        y_val_final = y_val_pred_raw_final
+        y_test_final = y_test_pred_raw
+        suffix = "_no_post"
+
+    run_name = mode + suffix  
+    met.plot_training_history(history, mode_name=run_name)
+
+    met.plot_confusion_matrix(y_val_true_final, y_val_final, mode_name=run_name, dataset_name="Validation")
+    met.plot_confusion_matrix(y_test_true, y_test_final, mode_name=run_name, dataset_name="Test")
 
     met.save_comparison_results(
-        y_val_true=np.array(oof_y_true), 
-        y_val_pred=np.array(oof_y_pred),   
+        y_val_true=y_val_true_final, 
+        y_val_pred=y_val_final,   
         y_test_true=y_test_true, 
-        y_test_pred=y_test_pred, 
-        mode_name=mode
+        y_test_pred=y_test_final, 
+        mode_name=run_name
     )
+    
+    
+    # y_test_pred = np.argmax(model.predict(X_test), axis=1)
+    # y_test_true = np.argmax(y_test, axis=1)
+    
+    # met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name=mode, dataset_name="Test")
+
+    # met.save_comparison_results(
+    #     y_val_true=np.array(oof_y_true), 
+    #     y_val_pred=np.array(oof_y_pred),   
+    #     y_test_true=y_test_true, 
+    #     y_test_pred=y_test_pred, 
+    #     mode_name=mode
+    # )

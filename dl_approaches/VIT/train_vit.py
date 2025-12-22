@@ -12,6 +12,7 @@ import common.metrics as met
 from dl_approaches.VIT.model_vit import create_vit_model
 from dl_approaches.prepare_tensors import generate_tensors
 
+import common.postprocessing as post
 
 def run_vit_experiment():
     generate_tensors()
@@ -93,22 +94,37 @@ def run_vit_experiment():
         verbose=1
     )
 
-    met.plot_training_history(history, mode_name="VIT")
-
-    y_test_pred = np.argmax(model.predict(X_test), axis=1)
+    y_test_pred_raw = np.argmax(model.predict(X_test), axis=1)
     y_test_true = np.argmax(y_test, axis=1)
 
-    met.plot_confusion_matrix(
-        y_test_true,
-        y_test_pred,
-        mode_name="VIT",
-        dataset_name="Test"
-    )
+    y_val_true_final = np.array(oof_y_true)
+    y_val_pred_raw_final = np.array(oof_y_pred)
+    
+
+    if cfg.USE_POST_PROCESSING:
+        print(f"\n[VIT] Applying Majority Voting optimization...")
+        y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
+            y_val_true_final, 
+            y_val_pred_raw_final, 
+            y_test_pred_raw
+        )
+        suffix = "_w_post"
+    else:
+        print(f"\n[VIT] Post-processing DISABLED via config.")
+        y_val_final = y_val_pred_raw_final
+        y_test_final = y_test_pred_raw
+        suffix = "_no_post"
+
+    run_name = "VIT" + suffix
+    met.plot_training_history(history, mode_name=run_name)
+
+    met.plot_confusion_matrix(y_val_true_final, y_val_final, mode_name=run_name, dataset_name="Validation")
+    met.plot_confusion_matrix(y_test_true, y_test_final, mode_name=run_name, dataset_name="Test")
 
     met.save_comparison_results(
-        y_val_true=np.array(oof_y_true),
-        y_val_pred=np.array(oof_y_pred),
-        y_test_true=y_test_true,
-        y_test_pred=y_test_pred,
-        mode_name="VIT"
+        y_val_true=y_val_true_final,
+        y_val_pred=y_val_final,
+        y_test_true=y_test_true, 
+        y_test_pred=y_test_final,
+        mode_name=run_name
     )

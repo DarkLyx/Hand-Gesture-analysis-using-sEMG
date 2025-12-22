@@ -1,11 +1,11 @@
 import os
 
 # APPROACH CHOICE
-MODE = "CNN"  # "ML", "CNN", "CNN-no-preprocessing", "CNN-VGG-transfert", "VIT" or "GNN"
+MODE = "VIT"  # "ML", "CNN", "CNN-no-preprocessing", "CNN-VGG-transfert", "VIT" or "GNN"
 
 #
 USE_PREPROCESSING = (MODE != "CNN-no-preprocessing")
-
+USE_POST_PROCESSING = True
 # 
 ROOT_DIR = 'data'             
 CSV_DIR = 'csv_data'          
