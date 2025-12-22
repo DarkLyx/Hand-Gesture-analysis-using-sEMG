@@ -72,7 +72,13 @@ common/config.py
 ### Model Selection
 
 ```python
-# Choose the approach: "ML", "CNN", "VIT" or "GNN"
+# Available Modes:
+# "ML"                     -> Feature Engineering + SVM
+# "CNN"                    -> Standard 1D CNN (Filtered Data)
+# "CNN-no-preprocessing"   -> Robustness test on Raw Data (No Filters/Cleaning)
+# "CNN-VGG-transfert"      -> Transfer Learning & Fine-Tuning
+# "VIT"                    -> Vision Transformer
+# "GNN"                    -> Graph Neural Network
 MODE = "ML"
 ```
 
@@ -94,6 +100,10 @@ From the root directory, execute:
 ```bash
 python main.py
 ```
+
+Note on tensors: The script automatically manages tensors data generation.
+
+If you switch modes (e.g., from CNN with preprocessing to without preprocessing), the script will clean the old tensors and regenerate the appropriate dataset in tensors_data/.
 
 The script will:
 
