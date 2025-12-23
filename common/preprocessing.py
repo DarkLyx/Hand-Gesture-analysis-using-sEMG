@@ -3,14 +3,14 @@ from scipy.signal import butter, filtfilt, iirnotch
 import common.config as cfg
 
 def notch_filter(data, fs=cfg.FS, freq=cfg.NOTCH_FREQ, Q=30.0):
-    """Filtre coupe-bande (50Hz) [Image of notch filter frequency response]."""
+    """Notch filter (50 Hz) to remove electrical grid noise."""
     nyq = 0.5 * fs
     freq_norm = freq / nyq
     b, a = iirnotch(freq_norm, Q)
     return filtfilt(b, a, data, axis=0)
 
 def butter_bandpass_filter(data, order=4):
-    """Filtre passe-bande 20-450Hz."""
+    """Band-pass filter between 20 and 450 Hz."""
     nyq = 0.5 * cfg.FS
     low = cfg.LOW_CUT / nyq
     high = cfg.HIGH_CUT / nyq
@@ -18,7 +18,7 @@ def butter_bandpass_filter(data, order=4):
     return filtfilt(b, a, data, axis=0)
 
 def clean_and_trim_data(df):
-    """Retire les classes ignorées et rogne les transitions."""
+    """Remove ignored classes and trim transition samples."""
     df_clean = df[~df['class'].isin(cfg.IGNORED_CLASSES)].copy()
     if df_clean.empty: return None
 
@@ -33,7 +33,7 @@ def clean_and_trim_data(df):
     return df_trimmed
 
 def get_windows(df):
-    """Découpe le dataframe en fenêtres (Générateur)."""
+    """Split the dataframe into sliding windows (generator)."""
     channels = [c for c in df.columns if 'channel' in c]
     for label, group in df.groupby('class'):
         data = group[channels].values

@@ -8,8 +8,8 @@ def train_ml_model(X_train, y_train):
     """Définit et entraîne le pipeline SVM via GridSearch."""
     
     pipeline = Pipeline([
-        ('scaler', StandardScaler()),       # Normalisation
-        ('lda', LDA()),                     # Réduction de dimension supervisée
+        ('scaler', StandardScaler()),                       # Normalization
+        ('lda', LDA()),                                     # Supervised dimension reduction
         ('svm', SVC(kernel='rbf', class_weight='balanced')) # Classification
     ])
     
@@ -18,9 +18,9 @@ def train_ml_model(X_train, y_train):
         'svm__gamma': ['scale', 0.01, 0.001]
     }
     
-    print("   [ML] Optimisation GridSearch en cours...")
+    print("[ML] Optimizing GridSearch")
     grid = GridSearchCV(pipeline, param_grid, cv=3, n_jobs=-1, verbose=1)
     grid.fit(X_train, y_train)
     
-    print(f"   [ML] Meilleurs paramètres : {grid.best_params_}")
+    print(f"[ML] Best parameters : {grid.best_params_}")
     return grid.best_estimator_

@@ -10,16 +10,17 @@ import common.preprocessing as pp
 import common.metrics as met
 import ml_approach.features as ft
 import ml_approach.model as ml_model
+import common.postprocessing as post
 
 def load_or_extract_features():
     if not os.path.exists(cfg.CSV_DIR):
         os.makedirs(cfg.CSV_DIR)
 
     if os.path.exists(cfg.CSV_FILE):
-        print(f"   [ML] Chargement de {cfg.CSV_FILE}...")
+        print(f"[ML] Loading {cfg.CSV_FILE}")
         return pd.read_csv(cfg.CSV_FILE)
     
-    print("   [ML] Extraction des features (TD+FD)...")
+    print("[ML] Feature extraction (TD+FD)")
     all_data = []
     
     for subject_id in range(1, 37):
@@ -43,11 +44,11 @@ def load_or_extract_features():
         print(f"   -> Sujet {subject_id} traité")
     
     if not all_data:
-        print(f"ERREUR: Aucune donnée trouvée dans {cfg.ROOT_DIR}")
+        print(f"No data found in {cfg.ROOT_DIR}")
         sys.exit()
 
     df = pd.DataFrame(all_data)
-    print(f"   [ML] Sauvegarde dans {cfg.CSV_FILE}...")
+    print(f"[ML] Saved in {cfg.CSV_FILE}")
     df.to_csv(cfg.CSV_FILE, index=False)
     return df
 
@@ -69,24 +70,28 @@ def run_ml_experiment():
 
     best_model = ml_model.train_ml_model(X_train, y_train)
 
-    # Optimisation Validation
+    # Optimization & Validation
     y_val_raw = best_model.predict(X_val)
-    best_win, best_acc = 1, 0
-    for w in [1, 3, 5, 7, 9]:
-        acc = accuracy_score(y_val, met.majority_voting(y_val_raw, w))
-        if acc > best_acc: best_win, best_acc = w, acc
-    print(f"   -> Meilleure fenêtre : {best_win}")
+    y_test_raw = best_model.predict(X_test)
 
-    print("\n   [ML] Calcul des scores finaux...")
-    
-    y_val_smooth = met.majority_voting(y_val_raw, window_size=best_win)
-    met.plot_confusion_matrix(y_val, y_val_smooth, mode_name="ML", dataset_name="Validation")
-    y_pred_raw = best_model.predict(X_test)
-    y_pred_smooth = met.majority_voting(y_pred_raw, window_size=best_win)
-    met.plot_confusion_matrix(y_test, y_pred_smooth, mode_name="ML", dataset_name="Test")
+    if cfg.USE_POST_PROCESSING:
+        print("\n[ML] Post-processing (Majority Voting)")
+        y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
+            y_val, y_val_raw, y_test_raw
+        )
+        suffix = "_w_post"
+    else:
+        print("\n[ML] Post-processing DISABLED (Using raw predictions).")
+        y_val_final = y_val_raw
+        y_test_final = y_test_raw
+        suffix = "_no_post"
+        
+    run_name = "ML" + suffix  
+    met.plot_confusion_matrix(y_val, y_val_final, mode_name=run_name, dataset_name="Validation")
+    met.plot_confusion_matrix(y_test, y_test_final, mode_name=run_name, dataset_name="Test")
 
     met.save_comparison_results(
-        y_val, y_val_smooth,    
-        y_test, y_pred_smooth, 
-        mode_name="ML"
+        y_val, y_val_final,    
+        y_test, y_test_final, 
+        mode_name=run_name
     )
