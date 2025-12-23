@@ -48,7 +48,7 @@ def load_or_extract_features():
         sys.exit()
 
     df = pd.DataFrame(all_data)
-    print(f"[ML] Saved in {cfg.CSV_FILE}...")
+    print(f"[ML] Saved in {cfg.CSV_FILE}")
     df.to_csv(cfg.CSV_FILE, index=False)
     return df
 
@@ -75,7 +75,7 @@ def run_ml_experiment():
     y_test_raw = best_model.predict(X_test)
 
     if cfg.USE_POST_PROCESSING:
-        print("\n[ML] Post-processing (Majority Voting)...")
+        print("\n[ML] Post-processing (Majority Voting)")
         y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
             y_val, y_val_raw, y_test_raw
         )
@@ -95,25 +95,3 @@ def run_ml_experiment():
         y_test, y_test_final, 
         mode_name=run_name
     )
-    
-    
-    # y_val_raw = best_model.predict(X_val)
-    # best_win, best_acc = 1, 0
-    # for w in [1, 3, 5, 7, 9]:
-    #     acc = accuracy_score(y_val, met.majority_voting(y_val_raw, w))
-    #     if acc > best_acc: best_win, best_acc = w, acc
-    # print(f"Best window : {best_win}")
-
-    # print("\n[ML] Computing final results")
-    
-    # y_val_smooth = met.majority_voting(y_val_raw, window_size=best_win)
-    # met.plot_confusion_matrix(y_val, y_val_smooth, mode_name="ML", dataset_name="Validation")
-    # y_pred_raw = best_model.predict(X_test)
-    # y_pred_smooth = met.majority_voting(y_pred_raw, window_size=best_win)
-    # met.plot_confusion_matrix(y_test, y_pred_smooth, mode_name="ML", dataset_name="Test")
-
-    # met.save_comparison_results(
-    #     y_val, y_val_smooth,    
-    #     y_test, y_pred_smooth, 
-    #     mode_name="ML"
-    # )

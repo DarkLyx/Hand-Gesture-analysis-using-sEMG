@@ -102,7 +102,7 @@ def run_vit_experiment():
     
 
     if cfg.USE_POST_PROCESSING:
-        print(f"\n[VIT] Applying Majority Voting optimization...")
+        print(f"\n[VIT] Applying Majority Voting optimization")
         y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
             y_val_true_final, 
             y_val_pred_raw_final, 

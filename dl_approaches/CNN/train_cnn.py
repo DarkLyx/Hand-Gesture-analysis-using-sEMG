@@ -89,7 +89,7 @@ def run_cnn_experiment(mode):
 
     
     if cfg.USE_POST_PROCESSING and (mode != "CNN-no-preprocessing"):
-        print(f"\n[{mode}] Applying Majority Voting optimization...")
+        print(f"\n[{mode}] Applying Majority Voting optimization")
         y_val_final, y_test_final, _ = post.optimize_and_apply_majority_voting(
             y_val_true_final, 
             y_val_pred_raw_final, 
@@ -114,17 +114,3 @@ def run_cnn_experiment(mode):
         y_test_pred=y_test_final, 
         mode_name=run_name
     )
-    
-    
-    # y_test_pred = np.argmax(model.predict(X_test), axis=1)
-    # y_test_true = np.argmax(y_test, axis=1)
-    
-    # met.plot_confusion_matrix(y_test_true, y_test_pred, mode_name=mode, dataset_name="Test")
-
-    # met.save_comparison_results(
-    #     y_val_true=np.array(oof_y_true), 
-    #     y_val_pred=np.array(oof_y_pred),   
-    #     y_test_true=y_test_true, 
-    #     y_test_pred=y_test_pred, 
-    #     mode_name=mode
-    # )
